@@ -140,10 +140,14 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        blogCreator\Providers\AppServiceProvider::class,
+        blogCreator\Providers\EventServiceProvider::class,
+        blogCreator\Providers\RouteServiceProvider::class,
 
+        /*
+         * Custom providers
+         */
+        'Collective\Html\HtmlServiceProvider',
     ],
 
     /*
@@ -191,7 +195,8 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
-
+        'Form' => 'Collective\Html\FormFacade',
+        'Html' => 'Collective\Html\HtmlFacade',
     ],
 
 ];

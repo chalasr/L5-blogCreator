@@ -1,5 +1,5 @@
 suites:
     main:
-        namespace: App
-        psr4_prefix: App
+        namespace: blogCreator
+        psr4_prefix: blogCreator
         src_path: app

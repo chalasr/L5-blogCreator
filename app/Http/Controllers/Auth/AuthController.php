@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace blogCreator\Http\Controllers\Auth;
 
-use App\User;
+use blogCreator\User;
 use Validator;
-use App\Http\Controllers\Controller;
+use blogCreator\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
