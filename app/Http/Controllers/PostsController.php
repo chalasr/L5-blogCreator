@@ -10,7 +10,7 @@ use App\Post;
 
 class PostsController extends Controller {
 
-	public function getPosts($slug)
+		public function getPost($slug)
     {
         $post = Post::where('slug', '=', $slug)->firstOrFail();
 

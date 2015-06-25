@@ -28,6 +28,14 @@ class BlogsController extends Controller {
 			return ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;
 		}
 
+		//f
+		public function showBlog($slug)
+    {
+        $blog = Blog::where('slug', '=', $slug)->firstOrFail();
+
+        return view('blogs.show')->with('blog', $blog);
+    }
+
 		//saving a new blog
 
 		public function create()
@@ -101,7 +109,7 @@ class BlogsController extends Controller {
 			}
 			else
 			{
-				return view('admin.edit-blog')->with('blog', $blog);
+				return view('admin.edit')->with('blog', $blog);
 			}
 
 		}
@@ -111,10 +119,8 @@ class BlogsController extends Controller {
 		public function update($id)
 		{
 			$validator = Validator::make(Input::all(), array(
-				'title' => 'required|min:3|max:255',
-				'image' => 'required',
-				'body' => 'required|min:10|max:65000',
-				'draft' => 'required'
+				'name' => 'required|min:1|max:255',
+				'description' => 'required|min:10|max:65000'
 			));
 
 			if($validator->fails())
@@ -146,12 +152,5 @@ class BlogsController extends Controller {
 				}
 			}
 		}
-
-		public function show($id)
-		{
-				Blog::findOrFail($id);
-				return view('blogs.show')->with('blog', $blog);
-		}
-
 
 }

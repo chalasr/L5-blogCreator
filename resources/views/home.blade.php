@@ -15,14 +15,12 @@
                 @foreach ($blogs as $item)
 
                     <article class="col-md-4">
-                        <h1>{{ $item->name }}</h1>
-                        {{-- <h1><a href="{{ URL::route('fullPost', $item->slug) }}">{{ $item->name }}</a></h1> --}}
+                        <h1><a href="{{ URL::route('fullBlog', $item->slug) }}">{{$item->name}}</a></h1>
 
                         <p><b>Posted on {{ $item->created_at->diffForHumans() }}</b></p>
                         {!! Markdown::parse(Str::limit($item->description, 200)) !!}
 
-                        {{-- <a href="{{ URL::route('fullPost', $item->slug) }}" class="btn btn-primary">ReadMore --}}
-                        </a>
+                        <a href="{{ URL::route('fullBlog', $item->slug) }}" class="btn btn-primary">ReadMore</a>
 
                     </article>
 

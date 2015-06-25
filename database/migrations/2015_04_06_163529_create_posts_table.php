@@ -19,6 +19,8 @@ class CreatePostsTable extends Migration {
 			$table->enum('draft', array(0,1))->default(0);
 			$table->text('body');
 			$table->string('image', 255);
+			$table->integer('blog_id')->unsigned();
+			$table->foreign('blog_id')->references('id')->on('blogs')->onUpdate('cascade')->onDelete('cascade');
 			$table->timestamps();
 		});
 

@@ -9,6 +9,9 @@ Route::resource('posts', 'PostsController', ['except' => ['show', 'index']]);
 //getting full blog post
 Route::get('/post/{slug}', array('uses' => 'PostsController@getPost', 'as' => 'fullPost'));
 
+//getting full blog post
+Route::get('/blog/{slug}', array('uses' => 'BlogsController@showBlog', 'as' => 'fullBlog'));
+
 //getting the login page
 Route::get('/admin/login', array('uses' => 'AdminController@getLogin', 'as' => 'getLogin'));
 
