@@ -13,9 +13,13 @@ class BlogsController extends Controller {
 
 	public function index()
 	{
+			if(Auth::check()){
       	$user = User::find(Auth::user()->id);
 				$blogs = $user->blogs;
 				return view('home')->with('blogs', $blogs);
+			}else{
+				return view('home');
+			}
 	}
 
 		//generating the unique slugs from the title of the blog
@@ -52,25 +56,15 @@ class BlogsController extends Controller {
 				'description' => 'required|min:10|max:65000'
 			));
 
-			if($validator->fails())
-			{
-				return Redirect::route('adminDash')->withErrors($validator)->withInput();
-			}
-			else
-			{
+			if($validator->fails()){
+				return Redirect::route('blogs.new')->withErrors($validator)->withInput();
+			}else{
 				$blog = new Blog;
 				$blog->name = Input::get('name');
 				$blog->description = Input::get('description');
 				$blog->slug = $this->getSlug($blog->name, $blog);
-
-				if($user->blogs()->save($blog))
-				{
-					return Redirect::route('adminDash')->with('success', 'The blog was saved successfully!');
-				}
-				else
-				{
-					return Redirect::route('adminDash')->with('fail','An error occurred while trying to save the blog!');
-				}
+				$user->blogs()->save($blog);
+				return Redirect::route('adminDash')->with('success', 'The blog was saved successfully!');
 			}
 		}
 
@@ -80,18 +74,13 @@ class BlogsController extends Controller {
 		{
 			$blog = Blog::find($id);
 
-			if($blog == null)
-			{
+			if($blog == null){
 				return Redirect::route('adminDash')->with('fail', 'No such blog to delete!');
-			}
-			else
-			{
-				if($blog->delete())
-				{
+			}else{
+				if($blog->delete()){
 					return Redirect::route('adminDash')->with('success', 'The blog was deleted successfully!');
 				}
-				else
-				{
+				else{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to delete the blog!');
 				}
 			}
@@ -103,12 +92,9 @@ class BlogsController extends Controller {
 		{
 			$blog = Blog::find($id);
 
-			if($blog == null)
-			{
+			if($blog == null){
 				return Redirect::route('adminDash')->with('fail', 'No such blog to edit!');
-			}
-			else
-			{
+			}else{
 				return view('admin.edit')->with('blog', $blog);
 			}
 
@@ -123,31 +109,25 @@ class BlogsController extends Controller {
 				'description' => 'required|min:10|max:65000'
 			));
 
-			if($validator->fails())
-			{
+			if($validator->fails()){
 				return Redirect::route('adminDash')->withErrors($validator)->withInput();
 			}
 
 			$blog = Blog::find($id);
 
-			if($blog == null)
-			{
+			if($blog == null){
 				return Redirect::route('adminDash')->with('fail', 'No such blog to edit!');
-			}
-			else
-			{
+			}else{
 				$blog->title =  Input::get('title');
 				$blog->image = Input::get('image');
 				$blog->body = Input::get('body');
 				$blog->draft = Input::get('draft');
 				$blog->slug = Str::slug($blog->title);
 
-				if($blog->save())
-				{
+				if($blog->save()){
 					return Redirect::route('adminDash')->with('success', 'The blog was updated successfully!');
 				}
-				else
-				{
+				else{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to update the blog!');
 				}
 			}
