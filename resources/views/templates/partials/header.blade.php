@@ -28,18 +28,18 @@
             @if(!Auth::check())
               <li><a href="{{ URL::route('getLogin') }}">Login</a></li>
              @elseif(Auth::user()->isAdmin == 1)
-             <li><a href="{{ URL::route('posts.create') }}">New post</a></li>
-             <li>
-               <a class="dropdown-toggle" href="#" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                 Admin
-                 <span class="caret"></span>
-               </a>
-               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                 <li><a href="{{ URL::to('blogs/create') }}">New Blog</a></li>
-                 <li><a href="{{ URL::to('admin/dash') }}">Manage Blogs</a></li>
-               </ul>
-             </li>
-            <li><a href="{{ URL::route('getLogout') }}">Logout</a></li>
+               <li><a href="{{ URL::route('posts.create') }}">New post</a></li>
+               <li>
+                 <a class="dropdown-toggle" href="#" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                   Admin
+                   <span class="caret"></span>
+                 </a>
+                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                   <li><a href="{{ URL::to('blogs/create') }}">New Blog</a></li>
+                   <li><a href="{{ URL::to('admin/dash') }}">Manage Blogs</a></li>
+                 </ul>
+               </li>
+              <li><a href="{{ URL::route('getLogout') }}">Logout</a></li>
              @else
               <li><a href="{{ URL::route('getLogout') }}">Logout</a></li>
             @endif
