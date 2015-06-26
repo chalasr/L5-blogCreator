@@ -20,7 +20,7 @@ class BlogsController extends Controller {
 				$blogs = $user->blogs;
 			}else
 				$blogs = Blog::all();
-				
+
 			return view('home')->with('blogs', $blogs);
 	}
 
@@ -97,7 +97,7 @@ class BlogsController extends Controller {
 			if($blog == null){
 				return Redirect::route('adminDash')->with('fail', 'No such blog to edit!');
 			}else{
-				return view('admin.edit')->with('blog', $blog);
+				return view('blogs.edit')->with('blog', $blog);
 			}
 
 		}
@@ -112,7 +112,7 @@ class BlogsController extends Controller {
 			));
 
 			if($validator->fails()){
-				return Redirect::route('adminDash')->withErrors($validator)->withInput();
+				return Redirect::to('blogs/'.$id.'/edit')->withErrors($validator)->withInput();
 			}
 
 			$blog = Blog::find($id);
@@ -120,12 +120,8 @@ class BlogsController extends Controller {
 			if($blog == null){
 				return Redirect::route('adminDash')->with('fail', 'No such blog to edit!');
 			}else{
-				$blog->title =  Input::get('title');
-				$blog->image = Input::get('image');
-				$blog->body = Input::get('body');
-				$blog->draft = Input::get('draft');
-				$blog->slug = Str::slug($blog->title);
-
+				$blog->name =  Input::get('name');
+				$blog->description = Input::get('description');
 				if($blog->save()){
 					return Redirect::route('adminDash')->with('success', 'The blog was updated successfully!');
 				}

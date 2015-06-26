@@ -6,7 +6,7 @@
 
 @section('content')
     <h1>Edit the Post</h1>
-		<form role="form" method="post" action="{{ URL::route('posts.edit', $post->id) }}" >
+		<form role="form" method="post" action="{{ URL::to('posts/'.$post->id) }}" >
 			<div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
 			    <label for="title">Title</label>
 			    <input type="text" class="form-control" name="title" id="title" placeholder="Enter Post Title" value="{{ $post->title }}">

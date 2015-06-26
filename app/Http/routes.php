@@ -6,6 +6,8 @@ Route::get('/', array('uses' => 'BlogsController@index', 'as' => 'home'));
 Route::resource('blogs', 'BlogsController', ['except' => ['show', 'index']]);
 Route::resource('posts', 'PostsController', ['except' => ['show', 'index']]);
 
+Route::post('blogs/{id}', ['uses' => 'BlogsController@update']);
+
 //getting full blog post
 Route::get('/post/{slug}', array('uses' => 'PostsController@getPost', 'as' => 'fullPost'));
 
@@ -29,6 +31,6 @@ Route::group(array('middleware' => 'admin'), function()
 	Route::get('/admin/dash', array('uses' => 'AdminController@getAdminDash', 'as' => 'adminDash'));
 	Route::get('/admin/logout', array('uses' => 'AdminController@getLogout', 'as' => 'getLogout'));
 	Route::get('/admin/delete/post/{id}', array('uses' => 'PostsController@deletePost', 'as' => 'deletePost'));
-	Route::get('/admin/edit/post/{id}', array('uses' => 'PostsController@getEditPost', 'as' => 'getEditPost'));
+	Route::get('/admin/delete/blog/{id}', array('uses' => 'BlogsController@deleteBlog', 'as' => 'deleteBlog'));
 
 });
