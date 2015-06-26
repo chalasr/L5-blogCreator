@@ -9,6 +9,18 @@
 
 	<div class="new-post">
 		<form role="form" method="post" action="{{ URL::route('posts.store') }}" >
+      <div class="form-group {{ $errors->has('blog') ? 'has-error' : ''}}">
+			    <label for="title">Title</label>
+			    <select class="form-control" name="blog">
+            @foreach($user->blogs as $blog)
+              <option value="{{ $blog->id }}">{{ $blog->name }}</option>
+            @endforeach
+			    </select>
+			    @if ($errors->has('blog'))
+			        {{ $errors->first('blog') }}
+			    @endif
+			</div>
+
 			<div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
 			    <label for="title">Title</label>
 			    <input type="text" class="form-control" name="title" id="title" placeholder="Enter Post Title">
@@ -17,6 +29,7 @@
 			        {{ $errors->first('title') }}
 			    @endif
 			</div>
+
 
 			<div class="form-group {{ $errors->has('image') ? 'has-error' : ''}}">
 			    <label for="image">Image</label>

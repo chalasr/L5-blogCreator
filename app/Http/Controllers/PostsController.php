@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator, Input, Auth, Redirect, Str;
 use App\Post;
+use App\Blog;
+use App\User;
 
 
 class PostsController extends Controller {
@@ -13,7 +15,6 @@ class PostsController extends Controller {
 		public function getPost($slug)
     {
         $post = Post::where('slug', '=', $slug)->firstOrFail();
-
         return view('posts.single')->with('post', $post);
     }
 
@@ -31,39 +32,35 @@ class PostsController extends Controller {
 
 		public function create()
     {
-        return view('posts.new');
+				$user = User::find(Auth::user()->id);
+				if(!$user->blogs->count())
+					return Redirect::route('home')->with('fail', 'You must have a blog if you want create posts');
+
+		    return view('posts.new')->with('user', $user);
     }
 
 		public function store()
 		{
 			$validator = Validator::make(Input::all(), array(
 				'title' => 'required|min:3|max:255',
-				'image' => 'required',
 				'body' => 'required|min:10|max:65000',
-				'draft' => 'required'
+				'image' => 'required',
+				'draft' => 'required',
 			));
 
-			if($validator->fails())
-			{
+			if($validator->fails()){
 				return Redirect::route('posts.create')->withErrors($validator)->withInput();
-			}
-			else
-			{
+			}else{
 				$post = new Post;
 				$post->title = Input::get('title');
 				$post->image = Input::get('image');
 				$post->body = Input::get('body');
 				$post->draft = Input::get('draft');
 				$post->slug = $this->getSlug($post->title, $post);
+				$blog = Blog::find(Input::get('blog'));
+				$blog->posts()->save($post);
 
-				if($post->save())
-				{
-					return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
-				}
-				else
-				{
-					return Redirect::route('adminDash')->with('fail','An error occurred while trying to save the post!');
-				}
+				return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
 			}
 		}
 
@@ -73,18 +70,12 @@ class PostsController extends Controller {
 		{
 			$post = Post::find($id);
 
-			if($post == null)
-			{
+			if($post == null){
 				return Redirect::route('adminDash')->with('fail', 'No such post to delete!');
-			}
-			else
-			{
-				if($post->delete())
-				{
+			}else{
+				if($post->delete()){
 					return Redirect::route('adminDash')->with('success', 'The post was deleted successfully!');
-				}
-				else
-				{
+				}else{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to delete the post!');
 				}
 			}
@@ -96,12 +87,9 @@ class PostsController extends Controller {
 		{
 			$post = Post::find($id);
 
-			if($post == null)
-			{
+			if($post == null){
 				return Redirect::route('adminDash')->with('fail', 'No such post to edit!');
-			}
-			else
-			{
+			}else{
 				return view('posts.edit')->with('post', $post);
 			}
 
@@ -125,24 +113,18 @@ class PostsController extends Controller {
 
 			$post = Post::find($id);
 
-			if($post == null)
-			{
+			if($post == null){
 				return Redirect::route('adminDash')->with('fail', 'No such post to edit!');
-			}
-			else
-			{
+			}else{
 				$post->title =  Input::get('title');
 				$post->image = Input::get('image');
 				$post->body = Input::get('body');
 				$post->draft = Input::get('draft');
 				$post->slug = Str::slug($post->title);
 
-				if($post->save())
-				{
+				if($post->save()){
 					return Redirect::route('adminDash')->with('success', 'The post was updated successfully!');
-				}
-				else
-				{
+				}else{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to update the post!');
 				}
 			}

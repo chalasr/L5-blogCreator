@@ -16,10 +16,11 @@ class BlogsController extends Controller {
 			if(Auth::check()){
       	$user = User::find(Auth::user()->id);
 				$blogs = $user->blogs;
-				return view('home')->with('blogs', $blogs);
 			}else{
-				return view('home');
+				$blogs = Blog::all();
 			}
+
+			return view('home')->with('blogs', $blogs);
 	}
 
 		//generating the unique slugs from the title of the blog

@@ -28,6 +28,7 @@
             @if(!Auth::check())
               <li><a href="{{ URL::route('getLogin') }}">Login</a></li>
              @elseif(Auth::user()->isAdmin == 1)
+             <li><a href="{{ URL::route('posts.create') }}">New post</a></li>
              <li>
                <a class="dropdown-toggle" href="#" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                  Admin
