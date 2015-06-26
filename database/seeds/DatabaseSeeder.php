@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PostsController;
 use App\User;
 use App\Post;
 
@@ -41,7 +41,7 @@ class PostsTableSeeder extends Seeder{
 	public function run()
 	{
 		$faker = Faker\Factory::create();
-		$aC = new AdminController;
+		$aC = new PostsController;
 		$post = new Post;
 
 		Post::truncate();

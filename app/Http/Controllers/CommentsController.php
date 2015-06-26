@@ -4,70 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Validator, Input, Auth, Redirect, Str;
 use App\Post;
+use App\Comment;
 
 
-class PostsController extends Controller {
+class CommentsController extends Controller {
 
-		public function getPost($slug)
+	public function create()
     {
-        $post = Post::where('slug', '=', $slug)->firstOrFail();
-
-        return view('posts.single')->with('post', $post);
+        return view('comments.new');
     }
 
-		//generating the unique slugs from the title of the post
+	public function store()
+	{
+		// $validator = Validator::make(Input::all());
 
-		public function getSlug($title, $model)
-		{
-			$slug = Str::slug($title);
-			$slugCount = count( $model->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->get() );
-
-			return ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;
-		}
-
-		//saving a new post
-
-		public function create()
-    {
-        return view('posts.new');
-    }
-
-		public function store()
-		{
-			$validator = Validator::make(Input::all(), array(
-				'title' => 'required|min:3|max:255',
-				'image' => 'required',
-				'body' => 'required|min:10|max:65000',
-				'draft' => 'required'
-			));
-
-			if($validator->fails())
-			{
-				return Redirect::route('posts.create')->withErrors($validator)->withInput();
-			}
-			else
-			{
-				$post = new Post;
-				$post->title = Input::get('title');
-				$post->image = Input::get('image');
-				$post->body = Input::get('body');
-				$post->draft = Input::get('draft');
-				$post->slug = $this->getSlug($post->title, $post);
-
-				if($post->save())
-				{
-					return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
-				}
-				else
-				{
-					return Redirect::route('adminDash')->with('fail','An error occurred while trying to save the post!');
-				}
-			}
-		}
+		// if($validator->fails())
+		// {
+		// 	return Redirect::route('comments.store')->withErrors($validator)->withInput();
+		// }
+		// else
+		// {
+			$user = Auth::user()->id;
+			$comment = new Comment;
+			$comment->content = Input::get('content');
+			$comment->user_id = $user;
+			$post = Post::find(Input::get('post'));
+			$post->comments()->save($comment);
+			return Redirect::route('fullPost', $post->slug);
+		// 	if($post->save())
+		// 	{
+		// 		return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
+		// 	}
+		// 	else
+		// 	{
+		// 		return Redirect::route('adminDash')->with('fail','An error occurred while trying to save the post!');
+		// 	}
+		// }
+	}
 
 		//deleting a post
 
