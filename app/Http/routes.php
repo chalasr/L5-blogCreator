@@ -21,6 +21,8 @@ Route::group(array('before' => 'csrf'), function()
 	Route::post('/admin/login', array('uses' => 'AdminController@postLogin', 'as' => 'postLogin'));
 });
 
+Route::resource('comments', 'CommentsController');
+
 //Dashboard which will be accessible only to admin
 Route::group(array('middleware' => 'admin'), function()
 {

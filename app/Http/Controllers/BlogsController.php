@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -16,10 +18,9 @@ class BlogsController extends Controller {
 			if(Auth::check()){
       	$user = User::find(Auth::user()->id);
 				$blogs = $user->blogs;
-			}else{
+			}else
 				$blogs = Blog::all();
-			}
-
+				
 			return view('home')->with('blogs', $blogs);
 	}
 
@@ -58,7 +59,7 @@ class BlogsController extends Controller {
 			));
 
 			if($validator->fails()){
-				return Redirect::route('blogs.new')->withErrors($validator)->withInput();
+				return Redirect::route('blogs.create')->withErrors($validator)->withInput();
 			}else{
 				$blog = new Blog;
 				$blog->name = Input::get('name');

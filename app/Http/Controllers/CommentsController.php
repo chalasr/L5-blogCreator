@@ -4,67 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Validator, Input, Auth, Redirect, Str;
 use App\Post;
-use App\Blog;
-use App\User;
+use App\Comment;
 
 
-class PostsController extends Controller {
+class CommentsController extends Controller {
 
-		public function getPost($slug)
+	public function create()
     {
-        $post = Post::where('slug', '=', $slug)->firstOrFail();
-        return view('posts.single')->with('post', $post);
+        return view('comments.new');
     }
 
-		//generating the unique slugs from the title of the post
+	public function store()
+	{
+		// $validator = Validator::make(Input::all());
 
-		public function getSlug($title, $model)
-		{
-			$slug = Str::slug($title);
-			$slugCount = count( $model->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->get() );
-
-			return ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;
-		}
-
-		//saving a new post
-
-		public function create()
-    {
-				$user = User::find(Auth::user()->id);
-				if(!$user->blogs->count())
-					return Redirect::route('home')->with('fail', 'You must have a blog if you want create posts');
-
-		    return view('posts.new')->with('user', $user);
-    }
-
-		public function store()
-		{
-			$validator = Validator::make(Input::all(), array(
-				'title' => 'required|min:3|max:255',
-				'body' => 'required|min:10|max:65000',
-				'image' => 'required',
-				'draft' => 'required',
-			));
-
-			if($validator->fails()){
-				return Redirect::route('posts.create')->withErrors($validator)->withInput();
-			}else{
-				$post = new Post;
-				$post->title = Input::get('title');
-				$post->image = Input::get('image');
-				$post->body = Input::get('body');
-				$post->draft = Input::get('draft');
-				$post->slug = $this->getSlug($post->title, $post);
-				$blog = Blog::find(Input::get('blog'));
-				$blog->posts()->save($post);
-
-				return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
-			}
-		}
+		// if($validator->fails())
+		// {
+		// 	return Redirect::route('comments.store')->withErrors($validator)->withInput();
+		// }
+		// else
+		// {
+			$user = Auth::user()->id;
+			$comment = new Comment;
+			$comment->content = Input::get('content');
+			$comment->user_id = $user;
+			$post = Post::find(Input::get('post'));
+			$post->comments()->save($comment);
+			return Redirect::route('fullPost', $post->slug);
+		// 	if($post->save())
+		// 	{
+		// 		return Redirect::route('adminDash')->with('success', 'The post was saved successfully!');
+		// 	}
+		// 	else
+		// 	{
+		// 		return Redirect::route('adminDash')->with('fail','An error occurred while trying to save the post!');
+		// 	}
+		// }
+	}
 
 		//deleting a post
 
@@ -72,12 +51,18 @@ class PostsController extends Controller {
 		{
 			$post = Post::find($id);
 
-			if($post == null){
+			if($post == null)
+			{
 				return Redirect::route('adminDash')->with('fail', 'No such post to delete!');
-			}else{
-				if($post->delete()){
+			}
+			else
+			{
+				if($post->delete())
+				{
 					return Redirect::route('adminDash')->with('success', 'The post was deleted successfully!');
-				}else{
+				}
+				else
+				{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to delete the post!');
 				}
 			}
@@ -89,9 +74,12 @@ class PostsController extends Controller {
 		{
 			$post = Post::find($id);
 
-			if($post == null){
+			if($post == null)
+			{
 				return Redirect::route('adminDash')->with('fail', 'No such post to edit!');
-			}else{
+			}
+			else
+			{
 				return view('posts.edit')->with('post', $post);
 			}
 
@@ -115,18 +103,24 @@ class PostsController extends Controller {
 
 			$post = Post::find($id);
 
-			if($post == null){
+			if($post == null)
+			{
 				return Redirect::route('adminDash')->with('fail', 'No such post to edit!');
-			}else{
+			}
+			else
+			{
 				$post->title =  Input::get('title');
 				$post->image = Input::get('image');
 				$post->body = Input::get('body');
 				$post->draft = Input::get('draft');
 				$post->slug = Str::slug($post->title);
 
-				if($post->save()){
+				if($post->save())
+				{
 					return Redirect::route('adminDash')->with('success', 'The post was updated successfully!');
-				}else{
+				}
+				else
+				{
 					return Redirect::route('adminDash')->with('fail', 'An error occurred while trying to update the post!');
 				}
 			}

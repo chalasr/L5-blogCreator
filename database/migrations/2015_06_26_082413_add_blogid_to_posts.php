@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignToPosts extends Migration {
+class AddBlogidToPosts extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,10 +12,9 @@ class AddForeignToPosts extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('posts', function(Blueprint $table)
-		{
-				$table->unsignedInteger('blog_id')->nullable();
-				$table->foreign('blog_id')->references('id')->on('blogs')->onUpdate('cascade')->onDelete('cascade');
+		Schema::table('posts', function(Blueprint $table){
+			$table->unsignedInteger('blog_id')->nullable();
+			$table->foreign('blog_id')->references('id')->on('blogs')->onUpdate('cascade')->onDelete('cascade');
 		});
 	}
 
